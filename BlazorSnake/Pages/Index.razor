@@ -1,0 +1,44 @@
+﻿@page "/"
+<style>
+    .cell { width: 30px; height: 30px; border: 1px dotted gray; float: left; }
+    .cell > input { width: 30px; height: 30px; border: none; }
+</style>
+<div class="container">
+    <div>
+        Таны оноо: <span class="alert" style="font-size:18px;">@score</span>
+    </div>
+    @for (int i = 0; i < 10; i++)
+    {
+        <div class="row">
+            @for (int j = 0; j < 10; j++)
+            {
+                <div class="cell">
+                    <input type="checkbox" checked="@(matrix[j,i]==1)" />
+                </div>
+            }
+        </div>
+    }
+
+    <div>        
+        <input @ref="myDiv" type="text" @onkeydown="KeyDown" style="opacity:0" onblur="this.focus()" autofocus />
+    </div>
+</div>
+@if (!live)
+{
+    <div class="modal fade show" style="display:block;" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Та хожигдлоо</h5>
+                    
+                </div>
+                <div class="modal-body">
+                    Таны оноо: @score; Refresh дараад дахин эхэлнэ үү
+                </div>
+                <div class="modal-footer">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+}
