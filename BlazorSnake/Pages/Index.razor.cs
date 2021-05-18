@@ -120,10 +120,11 @@ namespace BlazorSnake.Pages
 
         protected void KeyDown(KeyboardEventArgs e)
         {
+            key=e.Key;
             snakeDir = (e.Key, snakeDir) switch
             {
                 ("w" or "ArrowUp", 1 or 3) => 2,
-                ("s" or "ArrowArrowDown", 1 or 3) => 4,
+                ("s" or "ArrowDown", 1 or 3) => 4,
                 ("a" or "ArrowLeft", 2 or 4) => 1,
                 ("d" or "ArrowRight", 2 or 4) => 3,
                 _ => snakeDir
