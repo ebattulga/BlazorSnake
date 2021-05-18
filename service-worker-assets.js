@@ -57,7 +57,7 @@
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-7ZgxJsDAKkrs7crbY1ynOuBfF8nqp6+IGNJEJcNZ9yc=",
+      "hash": "sha256-DOFOFLpeBpxuum3EJOr4fUnvi0kHAJOOiJh87owNrwY=",
       "url": "index.html"
     },
     {
@@ -245,5 +245,5 @@
       "url": "_framework\/blazor.webassembly.js"
     }
   ],
-  "version": "jLUOQ5Dz"
+  "version": "XuHMdyRM"
 };
