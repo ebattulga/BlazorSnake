@@ -1,9 +1,11 @@
 ﻿@page "/"
+@inject IJSRuntime js  
 <style>
-    .cell { width: 30px; height: 30px; border: 1px dotted gray; float: left; }
-    .cell > input { width: 30px; height: 30px; border: none; }
+    .cell { width: 30px; height: 30px; border: none; float: left; }
+    .cell > input { width: 30px; height: 30px; outline: none; }
+    .nonfocus:focus-visible, .nonfocus:active{outline:none;}
 </style>
-<div class="container">
+<div @ref="mydiv" tabindex="0" class="container nonfocus" style="min-width:610px;" @onkeydown="KeyDown">
     <div>
         Таны оноо: <span class="alert" style="font-size:18px;">@score</span>
     </div>
@@ -21,8 +23,7 @@
     <div>@if(!live){ <span>Press any key to start</span>}</div>
     <div>Use: W A S D  or Arrow key </div>
     <div>        
-        Pressed: @key
-        <input type="text" @onkeydown="KeyDown" style="opacity:0" onblur="this.focus()" autofocus />
+        Pressed: @key        
     </div>
 </div>
 @if (GameFinished)

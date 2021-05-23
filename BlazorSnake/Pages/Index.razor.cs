@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,7 +112,15 @@ namespace BlazorSnake.Pages
 
             StateHasChanged();
         }
+        ElementReference mydiv;
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await js.InvokeVoidAsync("SetFocusToElement", mydiv);
+            }
+        }
         protected async Task KeyDown(KeyboardEventArgs e)
         {
             key=e.Key;
@@ -139,13 +148,15 @@ namespace BlazorSnake.Pages
             snake.Add(new coord() { x = 7, y = 5 });
             CreateFood();
             GameFinished=false;
-
+            
+            
         }
 
-        void Restart()
+        async Task Restart()
         {
             StartGame();
             Paint();
+            await js.InvokeVoidAsync("SetFocusToElement", mydiv);
         }
 
 
