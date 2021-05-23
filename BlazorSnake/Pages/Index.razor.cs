@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,46 +10,38 @@ namespace BlazorSnake.Pages
 {
     public partial class Index
     {
-        public int[,] matrix = new int[10, 10];
+        const int MatrixWidth=20;
+        public int[,] matrix = new int[MatrixWidth, MatrixWidth];
         public int snakeLength = 3;
-        public int snakeDir = 1;
+        public int directionRequest = 1;
+        public int snakeDir=1;
+
         public List<coord> snake;
         public coord food;
-        public bool live { get; set; } = true;
+
+        public bool live { get; set; } = false;
         int score;
         string key { get; set; }
+
+        Boolean GameFinished;
         protected override void OnInitialized()
         {
-            //matrix[2, 3] = 1;
-            //matrix[2, 4] = 1;
-            //matrix[2, 5] = 1;
             rand = new Random();
-            food = new coord();
-            snake = new List<coord>();
-            snake.Add(new coord() { x = 3, y = 5 });
-            snake.Add(new coord() { x = 4, y = 5 });
-            snake.Add(new coord() { x = 5, y = 5 });
-            CreateFood();
-            
 
-        }
-
-        protected override async Task OnInitializedAsync()
-        {
-
+            StartGame();
             Paint();
-            await Run();
         }
 
 
         async Task Run()
         {
+            live=true;
             while (live)
             {
-                await Task.Delay(500);
+                await Task.Delay(100);
 
                 var head = snake.FirstOrDefault();
-                var target = snakeDir switch
+                var target = directionRequest switch
                 {
                     1 => new coord() { x = head.x - 1, y = head.y },
                     2 => new coord() { x = head.x, y = head.y - 1 },
@@ -68,6 +61,7 @@ namespace BlazorSnake.Pages
                     score = snakeLength - 3;
                     StateHasChanged();
                 }
+                snakeDir=directionRequest;
                 Paint();
                 
             }
@@ -81,8 +75,8 @@ namespace BlazorSnake.Pages
         void CreateFood()
         {
             food = new coord();
-            food.x = rand.Next(0, 10);
-            food.y = rand.Next(0, 10);
+            food.x = rand.Next(0, MatrixWidth);
+            food.y = rand.Next(0, MatrixWidth);
             if (snake.Contains(food))
                 CreateFood();
 
@@ -92,17 +86,17 @@ namespace BlazorSnake.Pages
 
         void CheckWallOrBody(coord target)
         {
-            live = !(target.x < 0 || target.x >= 10 || target.y < 0 || target.y >= 10);
+            live = !(target.x < 0 || target.x >= MatrixWidth || target.y < 0 || target.y >= MatrixWidth);
             if (snake.Contains(target))
                 live = false;
-            
+            GameFinished=!live;
         }
 
         public void Paint()
         {
             try
             {
-                Array.Clear(matrix, 0, 100);
+                Array.Clear(matrix, 0, MatrixWidth* MatrixWidth);
 
                 foreach (var item in snake)
                 {
@@ -118,21 +112,43 @@ namespace BlazorSnake.Pages
             StateHasChanged();
         }
 
-        protected void KeyDown(KeyboardEventArgs e)
+        protected async Task KeyDown(KeyboardEventArgs e)
         {
             key=e.Key;
-            snakeDir = (e.Key, snakeDir) switch
+            if (!live && !GameFinished) { 
+                StartGame();
+                Run();
+            }
+            directionRequest = (e.Key, snakeDir) switch
             {
-                ("w" or "ArrowUp", 1 or 3) => 2,
-                ("s" or "ArrowDown", 1 or 3) => 4,
-                ("a" or "ArrowLeft", 2 or 4) => 1,
+                ("w" or "ArrowUp",    1 or 3) => 2,
+                ("s" or "ArrowDown",  1 or 3) => 4,
+                ("a" or "ArrowLeft",  2 or 4) => 1,
                 ("d" or "ArrowRight", 2 or 4) => 3,
-                _ => snakeDir
+                _ => directionRequest
             };
+        }
+        void StartGame()
+        {
+            food = new coord();
+            directionRequest=1;
+            snakeLength=3;
+            snake = new List<coord>();
+            snake.Add(new coord() { x = 5, y = 5 });
+            snake.Add(new coord() { x = 6, y = 5 });
+            snake.Add(new coord() { x = 7, y = 5 });
+            CreateFood();
+            GameFinished=false;
 
         }
 
-        protected ElementReference myDiv;
+        void Restart()
+        {
+            StartGame();
+            Paint();
+        }
+
+
 
 
         public class coord
@@ -143,6 +159,11 @@ namespace BlazorSnake.Pages
             public override bool Equals(object obj)
             {
                 return ((coord)obj).x == x && ((coord)obj).y == y;
+            }
+
+            public override int GetHashCode()
+            {
+                return x*10+y;
             }
         }
 

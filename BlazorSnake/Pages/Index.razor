@@ -7,10 +7,10 @@
     <div>
         Таны оноо: <span class="alert" style="font-size:18px;">@score</span>
     </div>
-    @for (int i = 0; i < 10; i++)
+    @for (int i = 0; i < MatrixWidth; i++)
     {
         <div class="row">
-            @for (int j = 0; j < 10; j++)
+            @for (int j = 0; j < MatrixWidth; j++)
             {
                 <div class="cell">
                     <input type="checkbox" checked="@(matrix[j,i]==1)" />
@@ -18,15 +18,16 @@
             }
         </div>
     }
-
+    <div>@if(!live){ <span>Press any key to start</span>}</div>
+    <div>Use: W A S D  or Arrow key </div>
     <div>        
-        @key
-        <input @ref="myDiv" type="text" @onkeydown="KeyDown" style="opacity:0" onblur="this.focus()" autofocus />
+        Pressed: @key
+        <input type="text" @onkeydown="KeyDown" style="opacity:0" onblur="this.focus()" autofocus />
     </div>
 </div>
-@if (!live)
+@if (GameFinished)
 {
-    <div class="modal fade show" style="display:block;" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" role="dialog">
+    <div class="modal fade show" data-backdrop="static" style="display:block;background:rgba(0,0,0,0.5);" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -37,7 +38,7 @@
                     Таны оноо: @score; Refresh дараад дахин эхэлнэ үү
                 </div>
                 <div class="modal-footer">
-                    
+                    <button class="btn btn-primary" @onclick="Restart">Дахин эхлэх</button>
                 </div>
             </div>
         </div>
